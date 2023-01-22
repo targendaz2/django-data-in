@@ -1,6 +1,10 @@
+from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 
-from ..models import DataSource, DataImport
+from ..models import DataSource, DataImport, TransformMap
+
+from tests.models import Book
+
 
 class FunctionalTests(TestCase):
 
@@ -20,8 +24,8 @@ class FunctionalTests(TestCase):
         # He creates a transform map to map the imported data to his Book model.
         book_transform_map = TransformMap(
             datasource=datasource,
-            target=Book,
-            map={
+            target=ContentType.objects.get(app_label='tests', model='book'),
+            field_map={
                 'title': 'title',
                 'author': 'author',
                 'genre': 'genre',
