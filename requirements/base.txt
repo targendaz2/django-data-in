@@ -1,4 +1,5 @@
-celery
 Django
+gunicorn
 Pillow
+psycopg2-binary
 requests
