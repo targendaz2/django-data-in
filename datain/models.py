@@ -1,3 +1,9 @@
 from django.db import models
 
-# Create your models here.
+class DataSource(models.Model):
+    
+    def test(self):
+        pass
+
+class DataImport(models.Model):
+    pass
