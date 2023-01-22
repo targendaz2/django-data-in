@@ -1,18 +1,20 @@
 from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 
-from ..models import DataSource, DataImport, TransformMap
+from ..models import DataSource, DataImport, TransformMap, ScheduledImport
 
 from tests.models import Book
 
 
 class FunctionalTests(TestCase):
 
-    def test_can_load_data_from_a_data_source(self):
+    def test_loads_data_from_a_data_source(self):
         # A developer wants to maintain a database of books sourced from a
         # public API. In his Django project, he initiates a data source for
         # said API.
-        datasource = DataSource('https://fakerapi.it/api/v1/books?_quantity=2')
+        datasource = DataSource(url='https://fakerapi.it/api/v1/books?_quantity=2')
+        datasource.full_clean()
+        datasource.save()
 
         # In a Django view, he tests the data source...
         datasource.test()
@@ -31,6 +33,8 @@ class FunctionalTests(TestCase):
                 'genre': 'genre',
             }
         )
+        book_transform_map.full_clean()
+        book_transform_map.save()
 
         # He then tests the transform map and confirms it successfully maps the
         # imported data into the Book model.
@@ -41,13 +45,14 @@ class FunctionalTests(TestCase):
         self.assertIsNotNone(book.genre)
 
         # Finally, he schedules the data source to load once weekly.
-        ScheduledImport(
-            datasource=datasource,
+        scheduled_import = ScheduledImport(
             transform_map=book_transform_map,
-            cadence='weekly',
-            day='Saturday',
+            cadence='W',
+            day=6,
             time='00:00',
-        ).save()
+        )
+        scheduled_import.full_clean()
+        scheduled_import.save()
 
         # At the scheduled date and time, the data source successfully imports
         # data into the Book model
