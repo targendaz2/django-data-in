@@ -1,6 +1,8 @@
 from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 
+from freezegun import freeze_time
+
 from ..models import DataSource, DataImport, TransformMap, ScheduledImport
 
 from tests.models import Book
@@ -8,7 +10,8 @@ from tests.models import Book
 
 class FunctionalTests(TestCase):
 
-    def test_loads_data_from_a_data_source(self):
+    @freeze_time("2023-01-23", as_kwarg='frozen_time')
+    def test_loads_data_from_a_data_source(self, frozen_time):
         # A developer wants to maintain a database of books sourced from a
         # public API. In his Django project, he initiates a data source for
         # said API.
@@ -53,6 +56,9 @@ class FunctionalTests(TestCase):
         )
         scheduled_import.full_clean()
         scheduled_import.save()
+
+        # Time passes, past the date the scheduled import is secheduled to run.
+        frozen_time.move_to("2023-01-29")
 
         # At the scheduled date and time, the data source successfully imports
         # data into the Book model
