@@ -1,4 +1,0 @@
--r base.txt
-
-autopep8==2.0.1
-freezegun==1.2.2
