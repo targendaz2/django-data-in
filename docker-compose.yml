@@ -1,0 +1,36 @@
+version: '3.4'
+
+services:
+  db:
+    image: postgres
+    hostname: postgres
+    volumes:
+      - ./postgres_data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=hello
+      - POSTGRES_HOST_AUTH_METHOD=trust
+
+  rabbit:
+    image: rabbitmq
+    hostname: rabbit
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbit
+      - RABBITMQ_DEFAULT_PASS=hello
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  web:
+    image: djangodatain
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 8000:8000
+    links:
+      - db
+      - rabbit
+    depends_on:
+      - db
