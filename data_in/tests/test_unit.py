@@ -46,3 +46,16 @@ class TransformMapTests(TestCase):
 
         # There should be a new Book record
         self.assertEqual(Book.objects.count(), 1)
+
+
+class ScheduledImportTests(TestCase):
+
+    def test_activate_creates_celery_task(self):
+        # Create a data source
+
+        # Create a transform map for the data source
+
+        # Schedule an import for the data source
+
+        # Confirm that Celery has a pending task for the data import
+        self.fail()
