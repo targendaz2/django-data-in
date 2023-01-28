@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_celery_results',
     'data_in',
     'tests',
 ]
@@ -126,3 +127,19 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Celery settings
+# https://docs.celeryq.dev/en/stable/userguide/configuration.html
+
+# Default broker URL.
+CELERY_BROKER_URL = 'amqp://rabbit:hello@rabbit:5672//'
+
+# Configure Celery to use a custom time zone.
+CELERY_TIMEZONE = TIME_ZONE
+
+# The backend used to store task results (tombstones).
+CELERY_RESULT_BACKEND = 'django-db'
+
+# Specify the cache backend.
+CELERY_CACHE_BACKEND = 'django-cache'
